@@ -1,0 +1,151 @@
+{
+  "name": "ttcraft-vsc",
+  "displayName": "TTCraft VSC",
+  "description": "Edit Lua scripts on your TTCraft game tables from VS Code.",
+  "version": "0.1.0",
+  "publisher": "ttcraft",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ttcraft",
+          "title": "TTCraft",
+          "icon": "media/dice.png"
+        }
+      ]
+    },
+    "views": {
+      "ttcraft": [
+        {
+          "id": "ttcraftTables",
+          "name": "Tables"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "ttcraftTables",
+        "when": "!ttcraft.signedIn",
+        "contents": "Sign in to TTCraft to see the tables you can script.\n[Sign in](command:ttcraft.signIn)\n\nSet the site URL first if you are not on the default instance (Settings → TTCraft)."
+      },
+      {
+        "view": "ttcraftTables",
+        "when": "ttcraft.signedIn",
+        "contents": "No tables you can script yet. You need Manage table permission in a room.\n[Refresh](command:ttcraft.refreshTables)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "ttcraft.signIn",
+        "title": "Sign in",
+        "category": "TTCraft",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "ttcraft.signOut",
+        "title": "Sign out",
+        "category": "TTCraft"
+      },
+      {
+        "command": "ttcraft.refreshTables",
+        "title": "Refresh tables",
+        "category": "TTCraft",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ttcraft.openTable",
+        "title": "Open table",
+        "category": "TTCraft"
+      },
+      {
+        "command": "ttcraft.closeTable",
+        "title": "Close table",
+        "category": "TTCraft",
+        "icon": "$(close)"
+      },
+      {
+        "command": "ttcraft.showConsole",
+        "title": "Show table console",
+        "category": "TTCraft",
+        "icon": "$(output)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "ttcraft.openTable",
+          "when": "false"
+        },
+        {
+          "command": "ttcraft.closeTable",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "ttcraft.refreshTables",
+          "when": "view == ttcraftTables",
+          "group": "navigation"
+        },
+        {
+          "command": "ttcraft.signIn",
+          "when": "view == ttcraftTables && !ttcraft.signedIn",
+          "group": "navigation"
+        },
+        {
+          "command": "ttcraft.signOut",
+          "when": "view == ttcraftTables && ttcraft.signedIn"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "ttcraft.openTable",
+          "when": "view == ttcraftTables && viewItem == table",
+          "group": "inline"
+        },
+        {
+          "command": "ttcraft.closeTable",
+          "when": "view == ttcraftTables && viewItem == table-open",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "TTCraft",
+      "properties": {
+        "ttcraft.url": {
+          "type": "string",
+          "default": "http://localhost:8123",
+          "markdownDescription": "Base URL of your TTCraft site (e.g. `https://ttcraft.net`). No trailing slash."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "icons": "node media/render-icons.js",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "node esbuild.js --production",
+    "check-types": "tsc --noEmit",
+    "vscode:prepublish": "npm run check-types && node esbuild.js --production"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@types/ws": "^8.5.10",
+    "esbuild": "^0.20.2",
+    "typescript": "^5.4.5"
+  }
+}

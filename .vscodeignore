@@ -1,0 +1,13 @@
+.vscode/**
+src/**
+node_modules/**
+esbuild.js
+tsconfig.json
+.gitignore
+package-lock.json
+**/*.map
+**/*.ts
+
+# Icon sources — only the generated PNGs ship.
+media/*.svg
+media/render-icons.js
