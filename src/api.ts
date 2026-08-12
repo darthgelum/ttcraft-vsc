@@ -65,10 +65,6 @@ export class DevApi {
   }
 
   private base(): string {
-    const b = baseUrl();
-    if (!b) {
-      throw new Error('TTCraft site URL is not set.');
-    }
-    return b;
+    return baseUrl();
   }
 }

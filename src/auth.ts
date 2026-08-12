@@ -42,16 +42,6 @@ export class AuthManager {
 
   async signIn(): Promise<boolean> {
     const base = baseUrl();
-    if (!base) {
-      const pick = await vscode.window.showErrorMessage(
-        'Set your TTCraft site URL first.',
-        'Open settings',
-      );
-      if (pick) {
-        await vscode.commands.executeCommand('workbench.action.openSettings', 'ttcraft.url');
-      }
-      return false;
-    }
 
     let start: DeviceCodeResponse;
     try {

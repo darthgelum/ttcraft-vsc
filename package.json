@@ -124,8 +124,8 @@
       "properties": {
         "ttcraft.url": {
           "type": "string",
-          "default": "http://localhost:8123",
-          "markdownDescription": "Base URL of your TTCraft site (e.g. `https://ttcraft.net`). No trailing slash."
+          "default": "https://ttcraft.net",
+          "markdownDescription": "TTCraft URL"
         }
       }
     }
