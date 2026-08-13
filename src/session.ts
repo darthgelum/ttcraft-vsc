@@ -143,11 +143,6 @@ export class TableSession {
     return this.catalog[key] ?? key;
   }
 
-  /** A "/"-separated path of category keys, resolved segment by segment. */
-  localizeCategory(category: string | undefined): string {
-    return this.categorySegments(category).join(' / ');
-  }
-
   /** The category path as resolved display segments (for a nested tree/folders). */
   categorySegments(category: string | undefined): string[] {
     if (!category) {

@@ -17,10 +17,6 @@ export class SessionManager {
     }
   }
 
-  get(id: number): TableSession | undefined {
-    return this.sessions.get(id);
-  }
-
   ensure(table: DevTable): TableSession {
     let session = this.sessions.get(table.id);
     if (!session) {

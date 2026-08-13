@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 const LUA_EXT = 'sumneko.lua';
 const RECOMMENDED_KEY = 'ttcraft.luaRecommended';
 
-export function hasLua(): boolean {
+function hasLua(): boolean {
   return vscode.extensions.getExtension(LUA_EXT) !== undefined;
 }
 
