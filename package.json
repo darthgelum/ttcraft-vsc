@@ -54,7 +54,7 @@
       {
         "view": "ttcraftTables",
         "when": "!ttcraft.signedIn",
-        "contents": "Sign in to TTCraft to see the tables you can script.\n[Sign in](command:ttcraft.signIn)\n\nSet the site URL first if you are not on the default instance (Settings → TTCraft)."
+        "contents": "Sign in to TTCraft to see the tables you can script.\n[Sign in](command:ttcraft.signIn)"
       },
       {
         "view": "ttcraftTables",
@@ -160,7 +160,7 @@
         "ttcraft.url": {
           "type": "string",
           "default": "https://ttcraft.net",
-          "markdownDescription": "TTCraft URL"
+          "markdownDescription": "Address of TTCraft. Only for a development copy — leave the default otherwise."
         },
         "ttcraft.tableFolder": {
           "type": "string",

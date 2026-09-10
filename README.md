@@ -1,79 +1,99 @@
 <p align="center"><img src="media/logo.png" width="600" alt="TTCraft"></p>
 
-Edit the Lua scripts on your [TTCraft](https://ttcraft.net) game tables straight from VS Code — a tree of your tables and their scriptable entities, real files on disk your AI agents can read and edit, core-API autocomplete, and the table's script console in the Output panel and in a file.
+<p align="center"><b>Edit the Lua scripts of your <a href="https://ttcraft.net">TTCraft</a> game tables in VS Code.</b><br>Real files, autocomplete, the table's console next to your code — and a folder your AI coding agent can work in.</p>
 
-> Status: **early.** The core loop (sign in → open a table → edit and save scripts → watch the console) works. See [Limitations](#limitations). The full guide lives in the TTCraft manual: [Scripting from VS Code](https://ttcraft.net/docs/vscode).
+<p align="center"><a href="https://ttcraft.net/docs/vscode">Guide</a> · <a href="https://ttcraft.net/docs/scripting">Scripting reference</a> · <a href="https://ttcraft.net/docs/table-archives">Table archives</a> · <a href="https://github.com/darthgelum/ttcraft-vsc/issues">Report an issue</a></p>
 
-## How it works
+## What you get
 
-The extension talks to two things:
+- 🎲 **Your tables in the sidebar.** Every table you manage, with its Global script, objects and library templates. Spawns and despawns show up live.
+- 📄 **Scripts as real files.** A table's scripts are mirrored into a folder on disk, so the Lua language server, search, git and any tool that reads files can work with them.
+- 💾 **Save is deploy.** `Ctrl+S` sends the script to the running table and it takes effect for every player at once. A script that does not compile is flagged on the offending line, and the previous version keeps running.
+- 🖥️ **The console in the editor.** Everything scripts print, plus compile and runtime errors, arrives in the *TTCraft Table* output channel and in `.ttcraft/console.log`.
+- ✨ **Autocomplete for the whole API.** Bundled definitions of `tw`, `self`, players, `JSON`, `Vector`, `Color` and every event callback, wired up for the [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) extension.
+- 🤖 **Made for AI agents.** The folder carries an `AGENTS.md` (and `CLAUDE.md`) that tells Copilot, Claude Code, Codex and friends what the files are, what saving does and where the API reference is.
 
-- **TTCraft** — only to sign in and to list the tables you may manage. Sign-in uses the OAuth Device Authorization Grant (like `gh auth login`): you approve the extension in your browser, no password is ever typed into the editor.
-- **The table server** — over its own WebSocket protocol, to read and write scripts and stream the console. The extension is just another client of the same protocol the browser table uses; every action still runs through the server's permission checks.
+## Getting started
 
-Opening a table **mirrors its scripts as real files** into one folder — the *table folder* — and adds that folder to your workspace:
+1. **Install** the extension, and the Lua extension when it offers.
+2. **Open a table in TTCraft.** Start it from the room page — the extension edits running tables. You need the *Manage table* permission in that room; owners and moderators have it.
+3. **Sign in.** Click the TTCraft icon in the Activity Bar, then **Sign in**. A browser tab opens on ttcraft.net with a short code already filled in; approve it there. No password is typed into the editor, and the link can be revoked at any time from *Settings → Security* on ttcraft.net.
+4. **Open a script.** Expand the table and click the Global script, an object or a template. Edit, save, watch the console.
 
-```
-AGENTS.md, CLAUDE.md               what this folder is, for AI agents
-global.lua                         the table-level Global script
-objects/<Name>__<guid>.lua         a live object's script
-templates/<Category>/…/<Name>__<id>.lua   a library template's script, foldered by its category
-.ttcraft/table.json                which table is mirrored, and whether it is connected
-.ttcraft/console.log               the table's script console, appended live
-.luarc.json                        points the Lua language server at the TTCraft API
-```
+## The table folder
 
-**One folder, one table.** Opening a script on a different table switches the folder: editors on the old table's files close, its files are removed, and the new table's scripts come in. Nothing is lost — the table is the source of truth and saves push immediately — and an AI agent working in the folder never sees two tables mixed together. The status bar shows which table is in the folder; click it to switch.
+Opening a script mirrors the table into one folder, the *table folder*, and adds it to your workspace:
 
-Display names come from the table's own localization catalog (the same one the browser uses), so built-in objects and templates read as real names rather than i18n keys, and templates keep the library's category tree as nested folders.
+| Path | What it is |
+| --- | --- |
+| `global.lua` | The table's Global script |
+| `objects/<Name>__<guid>.lua` | One object's script |
+| `templates/<Category>/…/<Name>__<id>.lua` | One library template's script, under its category |
+| `.ttcraft/console.log` | The table's console, appended live |
+| `.ttcraft/table.json` | Which table is here and whether it is connected |
+| `AGENTS.md`, `CLAUDE.md` | Orientation for AI agents |
+| `.luarc.json` | Wires the Lua language server to the bundled API |
 
-Real files (rather than a virtual file system) are what let the **Lua language server** and **AI coding agents** (Copilot, Claude, Codex, …) see, read and edit the scripts — they work on the filesystem. Saving a file pushes the script to the live table; if it doesn't compile, the save surfaces the error as a diagnostic (and a line in `.ttcraft/console.log`) and the previously running version keeps running, exactly like editing in the browser.
+**One folder holds one table.** Open a script on another table and the folder switches: the old table's editors close, its files are removed, and the new table's scripts take their place. Nothing is lost — every save already reached its table. The status bar shows which table is in the folder; click it to switch.
 
-The **Tables** view lists each table's entities:
+Only objects and templates that already have a script get a file. To start one, click the script-less object or template in the sidebar. Leave file names alone: the `__<id>` suffix is how a file finds its object, and deleting a file changes nothing on the table.
 
-- **Global script**, **Objects** and **Templates** are scriptable — they open as files.
-- **Effects** and other workbench libraries are data-only — they just list.
+## Working with an AI agent
 
-The tree updates live as objects are spawned or removed on the table and as the library changes, so what you add in the app appears here; a despawned object's file disappears, a template edited in the browser is rewritten. The refresh button forces a full resync (reconnect and re-pull every script), which also gives objects spawned since you connected their proper names.
+Point the agent at the table folder, or open VS Code on it. `AGENTS.md` tells it what the folder is, that saving pushes to the live table, where the console log is, and where the API definitions and the manual are. The manual is also served as markdown for agents at [ttcraft.net/llms.txt](https://ttcraft.net/llms.txt) and [ttcraft.net/llms-full.txt](https://ttcraft.net/llms-full.txt).
 
-> An object's script and the script of the template it was spawned from are **independent** — editing one does not change the other.
+A loop that works: edit → save → read the tail of `.ttcraft/console.log` → adjust.
 
-## Setup
+## Commands
 
-1. Set **Settings → Extensions → TTCraft → Url** to your site (default `https://ttcraft.net`).
-2. Open the **TTCraft** view in the Activity Bar and click **Sign in**. Approve the request in the browser tab that opens.
-3. Expand a table to browse its objects and templates, then click one to open its script — or use **Open table** to mirror the whole table and open `global.lua`.
-4. Edit and save (`Ctrl+S`). Script output and errors appear in the **TTCraft Table** output channel (`TTCraft: Show table console`) and in `.ttcraft/console.log`.
+All under **TTCraft:** in the Command Palette; most are also buttons in the sidebar.
 
-Install the **Lua** extension (`sumneko.lua`) when prompted for syntax highlighting and API autocomplete — the extension ships EmmyLua definitions for `tw`, the object and player handles, `JSON`/`Vector`/`Color`, and the event callbacks, and wires them up via the folder's `.luarc.json`.
+| Command | What it does |
+| --- | --- |
+| Sign in / Sign out | Link or unlink VS Code and your TTCraft account |
+| Open table | Mirror a whole table and open its Global script (button on the table's row) |
+| Switch table | Pick another table for the folder (also the status bar item) |
+| Close table | Disconnect and empty the folder |
+| Refresh tables | Reconnect and re-pull every script |
+| Show table console | Open the *TTCraft Table* output channel |
 
-The table must already be open in TTCraft (start it from the room). You need the **Manage table** permission in the room for it to appear.
+## Settings
 
-### The table folder and workspace restarts
+| Setting | |
+| --- | --- |
+| `ttcraft.tableFolder` | Where the table's scripts are mirrored. Empty, the default, uses a folder in the extension's storage. Point it at an empty folder *inside* a project you already have open to keep the table's scripts next to your own files — and to avoid the restart described below. |
+| `ttcraft.url` | Only for a development copy of TTCraft. Leave the default. |
 
-By default the table folder lives under the extension's storage and is added to your workspace the first time you open a table. VS Code restarts all extensions when a window gets its first folder, and reloads the window when a single-folder workspace becomes a multi-root one — so that first open may flash. The extension takes it in stride: the open you started is finished after the restart, and a table folder that is already in the workspace reconnects on its own whenever the window opens.
+## Good to know
 
-To avoid the restart entirely, set **Settings → TTCraft → Table Folder** to an empty folder *inside* a workspace folder you already have open (say `my-game/table`). Nothing is added to the workspace then, and your agent sees the table's scripts next to your own files. The folder must be empty when first used; the extension owns its contents from then on.
+- **The first table in a window may flash once.** VS Code restarts extensions when a window gets its first folder, or goes from one folder to several. The extension finishes the open after the restart, and a folder already in the workspace reconnects on its own when the window opens. A `ttcraft.tableFolder` inside an open project avoids this altogether.
+- **Object scripts edited in the browser** are not pushed to the folder live. Press **Refresh** after editing the same script in both places. Template edits, spawns and despawns do arrive live.
+- **Scripts only.** Objects, decks, zones, assets and the look of the table are made in the table itself; whole tables move as [table archives](https://ttcraft.net/docs/table-archives).
+- **One window per folder.** Two VS Code windows on the same table folder would both push saves.
 
-Neither closing the table nor signing out removes the folder from the workspace (that could restart extensions too); they empty it and leave a note in `AGENTS.md` and `.ttcraft/table.json` saying no table is connected.
+## Documentation
 
-## Working with AI agents
+- [Scripting from VS Code](https://ttcraft.net/docs/vscode) — the full guide to this extension, including the sign-in and table protocol for anyone building their own tooling.
+- [Table scripting](https://ttcraft.net/docs/scripting) — the model, handlers, the Global script, persistence, sandbox limits, and what is not available.
+- Reference: [Events](https://ttcraft.net/docs/scripting-events) · [Objects](https://ttcraft.net/docs/scripting-objects) · [World](https://ttcraft.net/docs/scripting-world) · [Players and turns](https://ttcraft.net/docs/scripting-players) · [Custom UI](https://ttcraft.net/docs/scripting-ui) · [Recipes](https://ttcraft.net/docs/scripting-recipes)
+- [Table archives](https://ttcraft.net/docs/table-archives) — how tables are saved, downloaded and loaded, and the archive format.
+- [Getting started with TTCraft](https://ttcraft.net/docs/getting-started) — rooms, channels, tables and modules.
 
-Point the agent at the table folder (or open VS Code on it). `AGENTS.md` there explains the files, that saving pushes to the live table, where the console log is, and where the API reference is — including the absolute path of the bundled `ttcraft.lua` definitions, which is the most precise description of the scripting API an agent can read. The manual is also served as markdown for agents at `/llms.txt` and `/llms-full.txt` on your TTCraft site.
+## Troubleshooting
 
-## Limitations
-
-- The table has to be running; the extension does not boot a stopped table.
-- Only objects and templates that already carry a script are materialized as files; open a script-less object from the tree to start one.
-- Scripts only. Assets, zones, decks, the table's look and everything else live in the app; whole tables move as archives (see the manual's *Table archives* page).
-- Object scripts edited in the browser are not pushed to the folder live — use **Refresh**.
-- Two VS Code windows mirroring the same folder will both push saves; keep one.
+| Symptom | Fix |
+| --- | --- |
+| The list is empty | You need *Manage table* in a room you belong to. The practice table is never listed. |
+| *The table is not open* | Start the table from the room page, then expand it again. |
+| *Your TTCraft session expired* | **Sign in** again. |
+| *The table folder … is not empty* | `ttcraft.tableFolder` points at a folder with other files in it; use an empty one. |
+| A save does nothing | Check the *TTCraft Table* output: a lost connection shows as *not saved*. **Refresh** reconnects. |
 
 ## Development
 
 ```bash
 npm install
-npm run compile       # or: npm run watch
+npm run compile   # or npm run watch, then F5 for an Extension Development Host
 ```
 
-Press `F5` to launch an Extension Development Host.
+Bug reports and ideas: [github.com/darthgelum/ttcraft-vsc/issues](https://github.com/darthgelum/ttcraft-vsc/issues). MIT licensed.
