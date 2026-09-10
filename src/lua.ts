@@ -18,9 +18,9 @@ export async function maybeRecommendLua(context: vscode.ExtensionContext): Promi
   }
   await context.globalState.update(RECOMMENDED_KEY, true);
 
-  const install = 'Install Lua';
+  const install = 'Install';
   const pick = await vscode.window.showInformationMessage(
-    'Install the Lua extension for TTCraft script highlighting and API autocomplete.',
+    'Install the Lua extension to get syntax highlighting and autocomplete for TTCraft scripts.',
     install,
     'Not now',
   );

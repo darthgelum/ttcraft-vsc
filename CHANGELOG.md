@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0
+
+- Wording pass over every message: sign-in, connection and save errors, the Tables view, the status bar and the quick pick now say what happened and what to do next, in one voice.
+- Settings descriptions rewritten; the URL setting is marked as development-only and the welcome text no longer mentions it.
+- README rewritten around what the extension does for you, with links to the manual and the scripting reference.
+
 ## 0.2.0
 
 - **One table folder.** The open table is mirrored into a single folder (`ttcraft.tableFolder`, default under the extension's storage) instead of one workspace folder per table. Opening a script on another table switches the folder: the old table's files and editors go away, the new table's come in. Agents working in the folder never see two tables at once.

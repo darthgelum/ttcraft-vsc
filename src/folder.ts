@@ -247,7 +247,7 @@ export class TableFolder {
 
     this.active = { session, watcher, synced };
     tableConsole.attachFile(this.metaUri(CONSOLE_LOG).fsPath, session.label);
-    tableConsole.note(`[${session.label}] mirrored into ${this.dir.fsPath}`, session.label);
+    tableConsole.note(`[${session.label}] table folder ready: ${this.dir.fsPath}`, session.label);
   }
 
   private stopWatching(): void {

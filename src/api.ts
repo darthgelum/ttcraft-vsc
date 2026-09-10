@@ -35,10 +35,10 @@ export class DevApi {
       throw new AuthError('Session expired.');
     }
     if (res.status === 409) {
-      throw new TableNotOpenError('The table is not open. Open it from the room in TTCraft, then reconnect.');
+      throw new TableNotOpenError('The table is not open. Start it from the room page in TTCraft, then try again.');
     }
     if (!res.ok) {
-      throw new Error(`connect failed: HTTP ${res.status}`);
+      throw new Error(`Could not connect to the table (HTTP ${res.status}).`);
     }
 
     return (await res.json()) as ConnectResponse;
@@ -58,7 +58,7 @@ export class DevApi {
       throw new AuthError('Session expired.');
     }
     if (!res.ok) {
-      throw new Error(`GET ${path} failed: HTTP ${res.status}`);
+      throw new Error(`TTCraft answered HTTP ${res.status} for ${path}.`);
     }
 
     return (await res.json()) as T;

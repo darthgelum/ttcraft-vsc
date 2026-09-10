@@ -2,7 +2,7 @@
   "name": "ttcraft-vsc",
   "displayName": "TTCraft VSC",
   "description": "Edit Lua scripts on your TTCraft game tables from VS Code.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "TTCraft",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -59,7 +59,7 @@
       {
         "view": "ttcraftTables",
         "when": "ttcraft.signedIn",
-        "contents": "No tables you can script yet. You need Manage table permission in a room, and the table has to be open.\n[Refresh](command:ttcraft.refreshTables)"
+        "contents": "No tables to show. A table appears here when it is open and you have the Manage table permission in its room.\n[Refresh](command:ttcraft.refreshTables)"
       }
     ],
     "commands": [
@@ -165,7 +165,7 @@
         "ttcraft.tableFolder": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Folder the open table's scripts are mirrored into. Empty: a folder under the extension's storage, added to the workspace on first use (VS Code restarts extensions when a window gets its first folder or goes from one folder to several). A folder **inside** an already-open workspace folder avoids that entirely. Must be empty the first time — the extension wipes its own files there on every switch."
+          "markdownDescription": "Folder that holds the open table's scripts. Leave it empty to use a folder in the extension's storage, which is added to the workspace the first time you open a table (VS Code may restart extensions once when that happens). Point it at an empty folder **inside** a project you already have open to keep the scripts next to your own files and skip the restart. The folder must be empty the first time; the extension manages its contents from then on."
         }
       }
     }

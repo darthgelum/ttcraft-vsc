@@ -167,9 +167,9 @@ async function restore(ext: Ext): Promise<void> {
       },
     );
   } catch (e) {
-    const reason = e instanceof AuthError ? 'the TTCraft sign-in expired' : reasonOf(e);
+    const reason = e instanceof AuthError ? 'the TTCraft session expired' : reasonOf(e);
     await folder.markDisconnected(marker.table, reason);
-    tableConsole.note(`[${session.label}] not reconnected: ${reason}`);
+    tableConsole.note(`[${session.label}] could not reconnect: ${reason}`);
   }
   updateStatus(ext);
   tables.refresh();
@@ -204,7 +204,7 @@ async function openEntity(ext: Ext, table: DevTable, target: Target): Promise<vo
     } else if (e instanceof AuthError) {
       vscode.window.showWarningMessage('Your TTCraft session expired — sign in again.');
     } else {
-      vscode.window.showErrorMessage(`Could not open: ${reasonOf(e)}`);
+      vscode.window.showErrorMessage(`Could not open the table: ${reasonOf(e)}`);
     }
     updateStatus(ext);
     tables.refresh();
@@ -237,11 +237,11 @@ async function switchTable(ext: Ext): Promise<void> {
     .map((table) => ({
       label: `$(${table.id === activeId ? 'folder-active' : table.running ? 'circle-filled' : 'circle-outline'}) #${table.channel.slug}`,
       description: table.room.name + (table.running ? '' : ' · closed'),
-      detail: table.id === activeId ? 'Mirrored in the workspace now' : undefined,
+      detail: table.id === activeId ? 'Currently in the table folder' : undefined,
       table,
     }));
   const pick = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Table to mirror into the workspace (replaces the current one)',
+    placeHolder: 'Pick a table to work on — it replaces the one in the table folder',
     matchOnDescription: true,
   });
   if (pick) {
@@ -257,7 +257,7 @@ function updateStatus(ext: Ext): void {
     return;
   }
   ext.status.text = `$(table) ${table.room.name} / #${table.channel.slug}`;
-  ext.status.tooltip = `TTCraft: this table's scripts are mirrored in the workspace.\n${ext.folder.dir.fsPath}\nClick to switch to another table.`;
+  ext.status.tooltip = `TTCraft table folder: ${ext.folder.dir.fsPath}\nClick to switch to another table.`;
   ext.status.show();
 }
 

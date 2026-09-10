@@ -94,8 +94,8 @@ export class TablesProvider implements vscode.TreeDataProvider<TtNode> {
       return tables.map((table) => {
         const active = table.id === activeId;
         const node = new TtNode({ kind: 'table', table }, `#${table.channel.slug}`, Collapsed);
-        node.description = table.room.name + (active ? ' · in workspace' : table.running ? '' : ' · closed');
-        node.tooltip = `${table.room.name} / #${table.channel.slug}` + (active ? `\nMirrored in ${this.folder.dir.fsPath}` : '');
+        node.description = table.room.name + (active ? ' · in the table folder' : table.running ? '' : ' · closed');
+        node.tooltip = `${table.room.name} / #${table.channel.slug}` + (active ? `\nTable folder: ${this.folder.dir.fsPath}` : '');
         node.contextValue = active ? 'table-open' : 'table';
         node.iconPath = new vscode.ThemeIcon(active ? 'folder-active' : table.running ? 'circle-filled' : 'circle-outline');
         return node;

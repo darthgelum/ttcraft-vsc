@@ -74,7 +74,7 @@ export class AuthManager {
     await vscode.env.openExternal(approval);
     const reopen = 'Open browser';
     void vscode.window
-      .showInformationMessage(`Approve VS Code in your browser. Code ${code} (copied).`, reopen)
+      .showInformationMessage(`Approve the sign-in in your browser. The code ${code} is already on your clipboard.`, reopen)
       .then((pick) => {
         if (pick === reopen) {
           vscode.env.openExternal(approval);
@@ -97,7 +97,7 @@ export class AuthManager {
     let interval = Math.max(MIN_POLL_MS, seconds(start.interval));
 
     return vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: 'Waiting for TTCraft approval…', cancellable: true },
+      { location: vscode.ProgressLocation.Notification, title: 'Waiting for approval in the browser…', cancellable: true },
       async (_progress, cancel) => {
         while (Date.now() < deadline && !cancel.isCancellationRequested) {
           await sleep(interval);
@@ -131,11 +131,11 @@ export class AuthManager {
             continue;
           }
           if (err === 'access_denied') {
-            vscode.window.showWarningMessage('TTCraft sign-in was denied.');
+            vscode.window.showWarningMessage('The sign-in was declined in the browser.');
             return undefined;
           }
           // expired_token / invalid_grant: nothing more to wait for.
-          vscode.window.showWarningMessage('TTCraft sign-in expired. Try again.');
+          vscode.window.showWarningMessage('The sign-in code expired. Try again.');
           return undefined;
         }
         return undefined;

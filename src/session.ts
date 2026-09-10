@@ -103,7 +103,7 @@ export class TableSession {
     this.dropSocket();
     // The old socket will never answer these; failing them now beats making the
     // caller wait out the request timeout.
-    this.rejectAll(new Error('reconnecting'));
+    this.rejectAll(new Error('Reconnecting to the table.'));
     await this.ensureConnected();
     this.changeListener?.();
   }
@@ -206,8 +206,8 @@ export class TableSession {
       clearTimeout(this.changeTimer);
       this.changeTimer = undefined;
     }
-    this.clearReady(new Error('session closed'));
-    this.rejectAll(new Error('session closed'));
+    this.clearReady(new Error('The table session was closed.'));
+    this.rejectAll(new Error('The table session was closed.'));
     this.dropSocket();
     this.ready = false;
   }
@@ -246,7 +246,7 @@ export class TableSession {
       // lingers until the process exits and races the next connect.
       this.readyTimer = setTimeout(() => {
         this.dropSocket();
-        this.clearReady(new Error('Timed out waiting for the table snapshot.'));
+        this.clearReady(new Error('The table did not send its state in time.'));
       }, READY_TIMEOUT_MS);
 
       const ws = new WebSocket(url);
@@ -263,7 +263,7 @@ export class TableSession {
         if (!opened) {
           this.clearReady(err instanceof Error ? err : new Error(String(err)));
         } else {
-          tableConsole.note(`[${this.label}] socket error: ${errText(err)}`);
+          tableConsole.note(`[${this.label}] connection error: ${errText(err)}`);
         }
       });
       ws.on('close', () => this.onClose(opened));
@@ -272,12 +272,12 @@ export class TableSession {
 
   private onClose(opened: boolean): void {
     if (opened) {
-      tableConsole.note(`[${this.label}] disconnected`);
+      tableConsole.note(`[${this.label}] disconnected from the table`);
     }
     this.ready = false;
     this.ws = undefined;
-    this.rejectAll(new Error('connection closed'));
-    this.clearReady(new Error('connection closed before the snapshot arrived'));
+    this.rejectAll(new Error('The connection to the table closed.'));
+    this.clearReady(new Error('The connection closed before the table sent its state.'));
   }
 
   private markReady(): void {
@@ -389,7 +389,7 @@ export class TableSession {
         tableConsole.line(this.label, String(msg.level ?? 'log'), String(msg.msg ?? msg.key ?? ''));
         break;
       case 'kicked':
-        tableConsole.note(`[${this.label}] kicked by the server`);
+        tableConsole.note(`[${this.label}] the table server ended this session`);
         break;
     }
   }
@@ -519,7 +519,7 @@ export class TableSession {
   private requireRuntimeId(guid: string): number {
     const obj = this.byGuid.get(guid);
     if (!obj) {
-      throw new Error('That object is not on the table right now.');
+      throw new Error('That object is no longer on the table.');
     }
     return obj.runtimeId;
   }
