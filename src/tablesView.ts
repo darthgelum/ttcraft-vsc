@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { AuthError, DevApi } from './api';
 import type { AuthManager } from './auth';
-import type { MirrorManager, Target } from './mirror';
+import type { TableFolder, Target } from './folder';
 import { SessionManager } from './sessions';
 import type { DevTable, TemplateItem } from './types';
 
@@ -43,7 +43,7 @@ export class TablesProvider implements vscode.TreeDataProvider<TtNode> {
     private readonly api: DevApi,
     private readonly auth: AuthManager,
     private readonly sessions: SessionManager,
-    private readonly mirror: MirrorManager,
+    private readonly folder: TableFolder,
   ) {}
 
   refresh(): void {
@@ -90,12 +90,14 @@ export class TablesProvider implements vscode.TreeDataProvider<TtNode> {
     }
     try {
       const tables = await this.api.tables();
+      const activeId = this.folder.activeTable()?.id;
       return tables.map((table) => {
+        const active = table.id === activeId;
         const node = new TtNode({ kind: 'table', table }, `#${table.channel.slug}`, Collapsed);
-        node.description = table.running ? table.room.name : `${table.room.name} · closed`;
-        node.tooltip = `${table.room.name} / #${table.channel.slug}`;
-        node.contextValue = this.mirror.isMaterialized(table.id) ? 'table-open' : 'table';
-        node.iconPath = new vscode.ThemeIcon(table.running ? 'circle-filled' : 'circle-outline');
+        node.description = table.room.name + (active ? ' · in workspace' : table.running ? '' : ' · closed');
+        node.tooltip = `${table.room.name} / #${table.channel.slug}` + (active ? `\nMirrored in ${this.folder.dir.fsPath}` : '');
+        node.contextValue = active ? 'table-open' : 'table';
+        node.iconPath = new vscode.ThemeIcon(active ? 'folder-active' : table.running ? 'circle-filled' : 'circle-outline');
         return node;
       });
     } catch (e) {

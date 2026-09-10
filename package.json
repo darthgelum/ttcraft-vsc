@@ -2,7 +2,7 @@
   "name": "ttcraft-vsc",
   "displayName": "TTCraft VSC",
   "description": "Edit Lua scripts on your TTCraft game tables from VS Code.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "ttcraft",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -11,6 +11,10 @@
   },
   "categories": [
     "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:**/.ttcraft/table.json"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -40,7 +44,7 @@
       {
         "view": "ttcraftTables",
         "when": "ttcraft.signedIn",
-        "contents": "No tables you can script yet. You need Manage table permission in a room.\n[Refresh](command:ttcraft.refreshTables)"
+        "contents": "No tables you can script yet. You need Manage table permission in a room, and the table has to be open.\n[Refresh](command:ttcraft.refreshTables)"
       }
     ],
     "commands": [
@@ -64,7 +68,14 @@
       {
         "command": "ttcraft.openTable",
         "title": "Open table",
-        "category": "TTCraft"
+        "category": "TTCraft",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "ttcraft.switchTable",
+        "title": "Switch table",
+        "category": "TTCraft",
+        "icon": "$(arrow-swap)"
       },
       {
         "command": "ttcraft.closeTable",
@@ -87,13 +98,22 @@
         },
         {
           "command": "ttcraft.closeTable",
-          "when": "false"
+          "when": "ttcraft.tableOpen"
+        },
+        {
+          "command": "ttcraft.switchTable",
+          "when": "ttcraft.signedIn"
         }
       ],
       "view/title": [
         {
           "command": "ttcraft.refreshTables",
           "when": "view == ttcraftTables",
+          "group": "navigation"
+        },
+        {
+          "command": "ttcraft.switchTable",
+          "when": "view == ttcraftTables && ttcraft.signedIn",
           "group": "navigation"
         },
         {
@@ -126,6 +146,11 @@
           "type": "string",
           "default": "https://ttcraft.net",
           "markdownDescription": "TTCraft URL"
+        },
+        "ttcraft.tableFolder": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Folder the open table's scripts are mirrored into. Empty: a folder under the extension's storage, added to the workspace on first use (VS Code restarts extensions when a window gets its first folder or goes from one folder to several). A folder **inside** an already-open workspace folder avoids that entirely. Must be empty the first time — the extension wipes its own files there on every switch."
         }
       }
     }

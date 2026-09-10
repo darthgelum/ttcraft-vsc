@@ -1,4 +1,10 @@
+import * as fs from 'fs';
 import * as vscode from 'vscode';
+
+// The on-disk copy of the console: agents can't read the Output panel, so the
+// active table's lines are also appended to <table folder>/.ttcraft/console.log.
+const FILE_MAX_BYTES = 1024 * 1024;
+const FILE_KEEP_BYTES = 256 * 1024;
 
 /**
  * Per-table console: the table server broadcasts script print()/log()/error
@@ -7,23 +13,69 @@ import * as vscode from 'vscode';
  */
 class Console {
   private channel = vscode.window.createOutputChannel('TTCraft Table', 'log');
+  private file?: { path: string; table: string };
+  private written = 0;
+  /** Serializes appends and the occasional trim so they never interleave. */
+  private queue: Promise<void> = Promise.resolve();
 
   line(table: string, level: string, message: string): void {
     const stamp = new Date().toISOString().slice(11, 19);
     const tag = level === 'error' ? 'ERROR' : level === 'info' ? 'info' : 'log';
-    this.channel.appendLine(`${stamp} [${table}] ${tag}: ${message}`);
+    const text = `${stamp} [${table}] ${tag}: ${message}`;
+    this.channel.appendLine(text);
+    if (this.file?.table === table) {
+      this.append(`${stamp} ${tag}: ${message}`);
+    }
   }
 
-  note(message: string): void {
+  /** A line from the extension itself; `table` routes it into that table's log file. */
+  note(message: string, table?: string): void {
     this.channel.appendLine(message);
+    if (this.file && (table === undefined || table === this.file.table)) {
+      this.append(`${new Date().toISOString().slice(11, 19)} ext: ${message}`);
+    }
   }
 
   show(): void {
     this.channel.show(true);
   }
 
+  /** Start mirroring one table's lines into a file (truncating what was there). */
+  attachFile(path: string, table: string): void {
+    this.file = { path, table };
+    this.written = 0;
+    this.queue = this.queue.then(() => fs.promises.writeFile(path, '')).catch(() => undefined);
+  }
+
+  detachFile(): void {
+    this.file = undefined;
+  }
+
   dispose(): void {
     this.channel.dispose();
+  }
+
+  private append(text: string): void {
+    const file = this.file;
+    if (!file) {
+      return;
+    }
+    this.written += text.length + 1;
+    const trim = this.written > FILE_MAX_BYTES;
+    if (trim) {
+      this.written = 0;
+    }
+    this.queue = this.queue
+      .then(async () => {
+        await fs.promises.appendFile(file.path, text + '\n');
+        if (trim) {
+          const all = await fs.promises.readFile(file.path);
+          const tail = all.subarray(Math.max(0, all.length - FILE_KEEP_BYTES));
+          await fs.promises.writeFile(file.path, tail);
+          this.written = tail.length;
+        }
+      })
+      .catch(() => undefined);
   }
 }
 

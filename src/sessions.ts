@@ -29,11 +29,9 @@ export class SessionManager {
     return session;
   }
 
-  /** Reconnect every open session for a full resync (fire-and-forget). */
-  resyncAll(): void {
-    for (const session of this.sessions.values()) {
-      void session.resync().catch(() => undefined);
-    }
+  /** Reconnect every open session for a full resync; a failed one just stays failed. */
+  async resyncAll(): Promise<void> {
+    await Promise.allSettled([...this.sessions.values()].map((session) => session.resync()));
   }
 
   close(id: number): void {
