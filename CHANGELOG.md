@@ -5,6 +5,7 @@
 - Wording pass over every message: sign-in, connection and save errors, the Tables view, the status bar and the quick pick now say what happened and what to do next, in one voice.
 - Settings descriptions rewritten; the URL setting is marked as development-only and the welcome text no longer mentions it.
 - README rewritten around what the extension does for you, with links to the manual and the scripting reference.
+- EmmyLua definitions for the `Table` global (the table's size, outline, seats, plan areas and `Table.set`) and for `zone:getName` / `zone:getSeat`; `AGENTS.md` now states the coordinate frame and points at the table-plan manual.
 
 ## 0.2.0
 

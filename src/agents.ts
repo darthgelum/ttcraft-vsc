@@ -65,6 +65,10 @@ Only objects and templates that already carry a script have a file here.
 - Full manual: ${site}/docs/scripting (markdown for agents: ${site}/llms-full.txt).
 - Definitions of every function, with types and doc comments:
   \`${info.libraryFile}\` — read it before assuming an API exists.
+- Coordinates are metres: the table's centre is the origin, the felt is \`y = 0\`, \`+x\` runs
+  right and \`+z\` toward seat 0 at the near edge; keep everything within ±3 m. The table's
+  size, outline, seats and named areas are read with the \`Table\` global and described as
+  a table plan (\`Table.set\`): ${site}/docs/table-plan.
 - Scripts run **on the server**, sandboxed: Lua 5.4 with \`base\`, \`math\`, \`string\`,
   \`table\` only. No \`require\`, no HTTP, no file or OS access, no client-side code.
 - New objects come from \`tw.spawnObject\` (built-in kinds), \`tw.spawnTemplate\` (library

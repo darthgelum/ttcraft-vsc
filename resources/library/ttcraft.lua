@@ -871,6 +871,12 @@ function Zone:setScale(x, y, z) end
 function Zone:getRotation() end
 ---@param degrees number
 function Zone:setRotation(degrees) end
+---A table-plan area's name; "" for an unnamed zone.
+---@return string
+function Zone:getName() end
+---The seat this player zone belongs to; -1 for an ordinary zone.
+---@return integer
+function Zone:getSeat() end
 ---Objects currently inside the zone.
 ---@return Object[]
 function Zone:getObjects() end
@@ -1250,6 +1256,101 @@ function Turns.getDisableInteractions() end
 function Turns.setPassEnabled(v) end
 ---@return boolean
 function Turns.getPassEnabled() end
+
+
+-- =============================================================================
+-- Table — the table itself: its size and outline, its seats, the named areas a
+-- table plan laid out, and Table.set — the plan from a script. Metres, the
+-- table's centre at the origin, the felt at y = 0, +x right, +z toward seat 0.
+-- Manual: /docs/table-plan.
+-- =============================================================================
+
+---@class TableInfo
+---@field width number
+---@field depth number
+---@field halfWidth number
+---@field halfDepth number
+---@field wallHeight number
+---@field seatCount integer
+---@field shaped boolean Has an outline beyond the plain rectangle.
+---@field bounds { minX: number, maxX: number, minZ: number, maxZ: number }
+
+---@class TableLoop
+---@field points { x: number, z: number }[]
+---@field hole boolean
+
+---@class Seat
+---@field seat integer
+---@field color string|nil Seat colour name; "black" is the GM.
+---@field center Vector The seat zone's centre.
+---@field position Vector The middle of its outer edge — where the player is.
+---@field forward Vector The direction the player faces, into the table.
+---@field right Vector To the player's right, along the rail.
+---@field rotation number The zone's rot, degrees.
+---@field width number
+---@field depth number
+---@field hand boolean Captures cards into the seated player's hand.
+---@field zone Zone|nil The seat zone, or nil when the seat has none.
+---@field player integer|nil The player sitting there.
+---@field toWorld fun(p: { x?: number, y?: number, z?: number }): Vector A point in the seat's axes (x right, z ahead) as a world Vector; call with a dot.
+
+---@class PlanReport
+---@field ok boolean
+---@field error string|nil
+---@field warnings string[]
+---@field seats { wanted: integer, placed: integer }|nil
+---@field areas integer|nil
+---@field snaps integer|nil
+
+Table = {}
+---Size, rail height, seat count, outline flag and the bounds.
+---@return TableInfo
+function Table.get() end
+---The outline as loops; a plain rectangle is one loop of its four corners.
+---@return TableLoop[]
+function Table.shape() end
+---Is the point on the felt? A hole is not. Table.contains(v) or Table.contains(x, z).
+---@param v Vector|table|number
+---@param z? number
+---@return boolean
+function Table.contains(v, z) end
+---The nearest point on the felt, `margin` metres in from the rail.
+---@param v Vector|table
+---@param margin? number
+---@return Vector
+function Table.clamp(v, margin) end
+---How many seats the table is laid out for.
+---@return integer
+function Table.seatCount() end
+---One seat, with or without a zone (then the historic edge position).
+---@param i integer
+---@return Seat
+function Table.seat(i) end
+---Every seat, 0 .. seatCount - 1.
+---@return Seat[]
+function Table.seats() end
+---The zone of a plan area by name, or nil.
+---@param name string
+---@return Zone|nil
+function Table.area(name) end
+---Every named area.
+---@return { name: string, seat: integer, zone: Zone }[]
+function Table.areas() end
+---The last applied table plan, or nil when the table was drawn by hand.
+---@return table|nil
+function Table.plan() end
+---Merge `plan` into the stored plan (top-level keys replace) and re-apply the whole thing.
+---plan: { shape, width, depth, wallHeight, seats, areas, snaps } — see /docs/table-plan.
+---@param plan table
+---@return PlanReport
+function Table.set(plan) end
+---Replace the stored plan outright and apply it.
+---@param plan table
+---@return PlanReport
+function Table.replace(plan) end
+---Forget the plan: its areas and snap points go; the outline and the seats stay.
+---@return PlanReport
+function Table.reset() end
 
 
 -- =============================================================================
