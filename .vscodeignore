@@ -10,4 +10,5 @@ package-lock.json
 
 # Icon sources — only the generated PNGs ship.
 media/*.svg
+media/*.html
 media/render-icons.js

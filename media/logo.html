@@ -1,0 +1,44 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>TTCraft VSC README banner</title>
+<!--
+  Source of media/logo.png: the landing header lockup (mark + wordmark) on a patch
+  of the landing hero sky under the landing's base-colour fade. The photo is read
+  from the sibling checkout of the site; the wordmark font comes from the same
+  provider the site uses, so rendering needs network access.
+
+  Render at 2x with headless Edge (or Chrome) from the repo root:
+
+    & "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new `
+      --disable-gpu --hide-scrollbars --window-size=600,176 --force-device-scale-factor=2 `
+      --virtual-time-budget=8000 --default-background-color=00000000 `
+      --user-data-dir=$env:TEMP\ttcraft-icon --screenshot=media\logo.png file:///$PWD/media/logo.html
+-->
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=space-grotesk:600">
+<style>
+  html, body { margin: 0; background: transparent; }
+  #banner {
+    position: relative; width: 600px; height: 176px; overflow: hidden;
+    border-radius: 26px;
+    display: flex; align-items: center; justify-content: center; gap: 26px;
+    background-image:
+      linear-gradient(rgba(25, 23, 36, 0.66), rgba(25, 23, 36, 0.66)),
+      url(../../ttcraft/public/img/landing-hero.jpg);
+    background-size: auto, 1001px auto;
+    background-position: 0 0, -220px -40px;
+    background-repeat: no-repeat;
+  }
+  #banner svg { width: 88px; height: 99px; }
+  #banner span {
+    font-family: 'Space Grotesk', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600; letter-spacing: -0.03em; font-size: 69px; line-height: 1;
+    color: #e0def4;
+  }
+</style>
+<div id="banner">
+  <svg viewBox="0 0 96 108" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" fill="#e0def4" d="M55.7 8.6L80.3 23.4Q88 28 88 37V71Q88 80 80.3 84.6L55.7 99.4Q48 104 40.3 99.4L15.7 84.6Q8 80 8 71V37Q8 28 15.7 23.4L40.3 8.6Q48 4 55.7 8.6ZM27 40L69 35L64 49H27ZM33 49H44L40 81ZM52 49H62L57 73Z"/>
+    <circle cx="45" cy="31" r="6.5" fill="#c4a7e7"/>
+  </svg>
+  <span>TTCraft</span>
+</div>

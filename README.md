@@ -1,4 +1,4 @@
-# TTCraft VSC
+<p align="center"><img src="media/logo.png" width="600" alt="TTCraft"></p>
 
 Edit the Lua scripts on your [TTCraft](https://ttcraft.net) game tables straight from VS Code — a tree of your tables and their scriptable entities, real files on disk your AI agents can read and edit, core-API autocomplete, and the table's script console in the Output panel and in a file.
 

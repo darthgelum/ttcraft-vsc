@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>TTCraft VSC marketplace tile</title>
+<!--
+  Source of media/icon.png: the TTCraft mark (public/img/TTlogo.svg in the site repo)
+  on a patch of the landing hero sky, under the same base-colour fade the landing
+  paints over the photo. The photo is read from the sibling checkout of the site.
+
+  Render with headless Edge (or Chrome) from the repo root:
+
+    & "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new `
+      --disable-gpu --hide-scrollbars --window-size=128,128 `
+      --default-background-color=00000000 --user-data-dir=$env:TEMP\ttcraft-icon `
+      --screenshot=media\icon.png file:///$PWD/media/icon.html
+-->
+<style>
+  html, body { margin: 0; background: transparent; }
+  #tile {
+    position: relative; width: 128px; height: 128px; overflow: hidden;
+    border-radius: 26px;
+    background-image:
+      linear-gradient(rgba(25, 23, 36, 0.66), rgba(25, 23, 36, 0.66)),
+      url(../../ttcraft/public/img/landing-hero.jpg);
+    background-size: auto, 1001px auto;
+    background-position: 0 0, -330px -120px;
+    background-repeat: no-repeat;
+  }
+  #tile svg { position: absolute; left: 26.5px; top: 21.9px; width: 74.9px; height: 84.2px; }
+</style>
+<div id="tile">
+  <svg viewBox="0 0 96 108" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" fill="#e0def4" d="M55.7 8.6L80.3 23.4Q88 28 88 37V71Q88 80 80.3 84.6L55.7 99.4Q48 104 40.3 99.4L15.7 84.6Q8 80 8 71V37Q8 28 15.7 23.4L40.3 8.6Q48 4 55.7 8.6ZM27 40L69 35L64 49H27ZM33 49H44L40 81ZM52 49H62L57 73Z"/>
+    <circle cx="45" cy="31" r="6.5" fill="#c4a7e7"/>
+  </svg>
+</div>

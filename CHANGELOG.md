@@ -8,6 +8,7 @@
 - Despawned objects lose their file live; templates edited in the browser update live; **Refresh** re-pulls every script.
 - **Switch table** command (status bar item and view toolbar).
 - Sign-out and Close no longer remove workspace folders.
+- Marketplace tile is now the TTCraft mark on the landing sky (`media/icon.html`) and the README opens with the landing lockup (`media/logo.html`); manifest gained `repository`, `homepage`, `bugs` and `keywords`.
 
 ## 0.1.0
 

@@ -1,13 +1,14 @@
-// Renders media/dice.svg's geometry to the PNGs the manifest ships:
-//
-//   dice.png  96x96  activity-bar icon. VS Code uses it as a CSS mask scaled to
-//                    24px, so only the alpha channel matters and 4x keeps it
-//                    crisp on HiDPI.
-//   icon.png  128x128 marketplace tile — opaque, so this one is really painted.
+// Renders media/dice.svg's geometry to dice.png (96x96), the activity-bar icon.
+// VS Code uses it as a CSS mask scaled to 24px, so only the alpha channel
+// matters and 4x keeps it crisp on HiDPI.
 //
 // The shape is simple enough (a rounded-rect outline plus five pips) to sample
 // analytically from signed distance fields, which antialiases better than
 // supersampling and keeps this dependency-free. Run with `npm run icons`.
+//
+// The marketplace tile (icon.png) is a different picture — the TTCraft mark on
+// the landing sky — rendered from media/icon.html with a headless browser; see
+// the comment in that file.
 
 const fs = require('fs');
 const path = require('path');
@@ -124,33 +125,7 @@ function renderMask(size) {
   return rgba;
 }
 
-/** An opaque tile: light die on a dark rounded square. */
-function renderTile(size) {
-  const rgba = Buffer.alloc(size * size * 4);
-  const bg = [0x1e, 0x24, 0x30];
-  const fg = [0xea, 0xef, 0xf7];
-
-  const die = size * 0.625; // the die's 24-unit box, inset from the tile edge
-  const offset = (size - die) / 2;
-  const ppu = die / 24;
-
-  for (let y = 0; y < size; y++) {
-    for (let x = 0; x < size; x++) {
-      const px = x + 0.5;
-      const py = y + 0.5;
-      const i = (y * size + x) * 4;
-      const half = size / 2;
-      over(rgba, i, bg, coverage(sdRoundRect(px, py, half, half, half, half, size * 0.22), 1));
-      over(rgba, i, fg, coverage(sdDie((px - offset) / ppu, (py - offset) / ppu), ppu));
-    }
-  }
-  return rgba;
-}
-
-const outputs = [
-  ['dice.png', 96, renderMask(96)],
-  ['icon.png', 128, renderTile(128)],
-];
+const outputs = [['dice.png', 96, renderMask(96)]];
 
 for (const [name, size, rgba] of outputs) {
   const file = path.join(__dirname, name);
