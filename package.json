@@ -3,7 +3,7 @@
   "displayName": "TTCraft VSC",
   "description": "Edit Lua scripts on your TTCraft game tables from VS Code.",
   "version": "0.2.0",
-  "publisher": "ttcraft",
+  "publisher": "TTCraft",
   "license": "MIT",
   "icon": "media/icon.png",
   "repository": {
